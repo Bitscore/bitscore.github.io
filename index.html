@@ -1,7 +1,103 @@
 <html>
 <head> 
 <title>BitScore</title>
+<!-- Web socket part -->
+<script language="javascript" type="text/javascript">  
+var wsUri = "wss://ws.blockchain.info/inv";
+var output;
+function init()
+{
+    output = document.getElementById("blockchainOutput");
+    initWebSocket();
+}
+function initWebSocket()
+{
+    //  init blockchain websocket (activity, blocks)
+    var blockchain = new WebSocket('wss://ws.blockchain.info/inv');
 
+    blockchain.onerror = function (error){ console.log('connection.onerror',error); };
+
+    blockchain.onopen = function () 
+    {
+        writeToScreen("Connection to blockchain.info succesful.");
+        blockchain.send( JSON.stringify( {"op":"ping_block"} ) );
+        blockchain.send( JSON.stringify( {"op":"unconfirmed_sub"} ) );       //  subscribe to new blocks
+    };
+
+    String.prototype.isMatch = function(s){
+    	   return this.match(s)!==null 
+    	}
+    
+    blockchain.onmessage = function (message) 
+    {
+        var response = JSON.parse(message.data);
+		
+        var date = new Date(0);
+        date.setUTCSeconds( response.x.time );
+
+        if( response.op == "utx")
+        {
+            var amount = 0;
+
+            for(var i=0;i<response.x.out.length;i++) 
+                amount += response.x.out[i].value;
+
+            //  amount is in satoshi
+            //  1 BTC = 100,000,000 Satoshi 
+
+
+			//([url='https://en.bitcoin.it/wiki/activity)']https://en.bitcoin.it/wiki/activity)[/url]
+            response.amount = amount / 100000000;
+            response.type = TYPE_TRANSACTION;
+            response.index = index++;
+            response.date = date;
+        }
+        else if( response.op == "block" )
+        {
+            response.type = TYPE_BLOCK;
+
+            response.date = date;
+
+        }
+
+        if( DEBUG ) 
+            console.log( response.op, response );
+
+        response.date = date;
+        
+        var outAddress = response.x.out[0].addr.toString();
+        //junsic's address 
+        if(outAddress.indexOf("1FnsVNnWi5v5PCZ37e6aDTZECxrJyBRK6M") > -1){
+        	writeToScreen('<span style="color: red;">Michael Give some money to Junsic </span>');
+        	writeToScreen('<span style="color: blue;">Payback Time : </span>' + response.date);
+            writeToScreen('<span style="color: blue;">Michael address: </span>' + response.x.inputs[0].prev_out.addr);
+            writeToScreen('<span style="color: blue;">Junsic address: </span>' + response.x.out[0].addr);
+            writeToScreen('<span style="color: blue;">pay value: </span>' + response.x.out[0].value + "satochi");
+            
+        }
+    };
+}
+function writeToScreen(message)
+{
+    var pre = document.createElement("p");
+    pre.innerHTML = message;
+    output.appendChild(pre);
+}
+//  constants
+var TYPE_TRANSACTION = "transaction";
+var TYPE_TRADE = "trade";
+var TYPE_BLOCK = "block";
+var MINUTE = 1000*60;
+var HOUR = MINUTE*60;
+var MIN_MINUTES = 1;
+var MAX_MINUTES = 10;
+var DEBUG = true;
+var activity = [];
+var index = 0;
+
+window.addEventListener("load", init, false);
+</script>
+<!-- Web socket part -->
 <SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript"> 
 function ajaxRequest(){
      var activexmodes=["Msxml2.XMLHTTP", "Microsoft.XMLHTTP"]; //activeX versions to check for in IE
@@ -28,6 +124,8 @@ function ajaxget(){
       if (mygetrequest.status==200 || window.location.href.indexOf("http")==-1){
     	  obj = JSON.parse(mygetrequest.responseText);
     	document.getElementById("result").innerHTML = obj.total_sent + " Satoshi";
+    	document.getElementById("amount").value =
+    		document.getElementById("amount").defaultValue = obj.total_sent;
       }
       else{
        alert("An error has occured making the request");
@@ -82,8 +180,6 @@ function computeLoan(){
 }
 </SCRIPT>
     
-</SCRIPT>
-    
 </head>
     
 <body>
@@ -109,17 +205,13 @@ function computeLoan(){
         
     <h2>Step 2: Select The Terms of The Loan</h2>    
         
-        <p>Loan Amount: &#3647; <input id="amount" type="number" min="1" max="1000000" onchange="computeLoan()"></p>
+        <p>Loan Amount: &#3647; <input id="amount" type="number" min="1" max="1000000" onchange="computeLoan()"> satoshi</p>
         <p>Interest Rate: <input id="interest_rate" type="number" min="0" max="100" value="10" step=".1" onchange="computeLoan()">%</p>
         <p>Months: <input id="months" type="number" min="1" max="72" value="1" step="1" onchange="computeLoan()"></p>
         <p id="payment"></p>
-
-        
-        
-        
         
     <h2>Step 3: Select The Borrowers Address</h2>
-        
+        <div id="blockchainOutput"></div>
         
 </body>
 </html>

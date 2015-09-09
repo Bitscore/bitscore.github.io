@@ -5,8 +5,10 @@
 <script language="javascript" type="text/javascript">  
 var wsUri = "wss://ws.blockchain.info/inv";
 var output;
+var lenderID;
 function init()
 {
+	lenderID = document.getElementById("lID").value;
     output = document.getElementById("blockchainOutput");
     initWebSocket();
 }
@@ -67,13 +69,12 @@ function initWebSocket()
         
         var outAddress = response.x.out[0].addr.toString();
         //junsic's address 
-        if(outAddress.indexOf("1FnsVNnWi5v5PCZ37e6aDTZECxrJyBRK6M") > -1){
-        	writeToScreen('<span style="color: red;">Michael Give some money to Junsic </span>');
+        if(outAddress.indexOf(lenderID) > -1){
+        	writeToScreen('<span style="color: red;">Michael Give some money to </span>' + lenderID);
         	writeToScreen('<span style="color: blue;">Payback Time : </span>' + response.date);
             writeToScreen('<span style="color: blue;">Michael address: </span>' + response.x.inputs[0].prev_out.addr);
             writeToScreen('<span style="color: blue;">Junsic address: </span>' + response.x.out[0].addr);
             writeToScreen('<span style="color: blue;">pay value: </span>' + response.x.out[0].value + "satochi");
-            
         }
     };
 }
@@ -95,9 +96,11 @@ var DEBUG = true;
 var activity = [];
 var index = 0;
 
-window.addEventListener("load", init, false);
+<!-- window.addEventListener("load", init, false); -->
 </script>
 <!-- Web socket part -->
+
+
 <SCRIPT TYPE="text/javascript" LANGUAGE="JavaScript"> 
 function ajaxRequest(){
      var activexmodes=["Msxml2.XMLHTTP", "Microsoft.XMLHTTP"]; //activeX versions to check for in IE
@@ -201,7 +204,6 @@ function computeLoan(){
 	</form>
 
 	<p><div id="result"></p></div>
-    
         
     <h2>Step 2: Select The Terms of The Loan</h2>    
         
@@ -211,6 +213,9 @@ function computeLoan(){
         <p id="payment"></p>
         
     <h2>Step 3: Select The Borrowers Address</h2>
+    Junsic's address : 1FnsVNnWi5v5PCZ37e6aDTZECxrJyBRK6M <br>
+    Lender's address: <input type="text" id="lID" name="lID" size="30" />
+    <input type="button" value="monitoring start" onClick="init()" />
         <div id="blockchainOutput"></div>
         
 </body>

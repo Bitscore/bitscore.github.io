@@ -189,11 +189,11 @@ function computeLoan(){
     <h1>BitScore<h1>
         <p></p>
     
-    <h2>Step 1: Select a Lend Address<h2>
+    <h2>Step 1: Sitpulate the Lender Send Address<h2>
 	<form method="get" action="">
 		<table>
 			<tr>
-				<td>Transaction ID:</td>
+				<td>Lender's Send Address: </td>
 				<td><input type="text" id="tID" name="tID" size="30" /></td>
 			</tr><tr>
 				<td>&nbsp;</td>
@@ -205,16 +205,15 @@ function computeLoan(){
 
 	<p><div id="result"></p></div>
         
-    <h2>Step 2: Select The Terms of The Loan</h2>    
+    <h2>Step 2: Agree to The Terms of The Loan</h2>    
         
-        <p>Loan Amount: &#3647; <input id="amount" type="number" min="1" max="1000000" onchange="computeLoan()"> satoshi</p>
+        <p>Loan Amount: &#3647; <input id="amount" type="number" min="1" max="1000000" onchange="computeLoan()"> Satoshi</p>
         <p>Interest Rate: <input id="interest_rate" type="number" min="0" max="100" value="10" step=".1" onchange="computeLoan()">%</p>
         <p>Months: <input id="months" type="number" min="1" max="72" value="1" step="1" onchange="computeLoan()"></p>
         <p id="payment"></p>
         
-    <h2>Step 3: Select The Borrowers Address</h2>
-    Junsic's address : 1FnsVNnWi5v5PCZ37e6aDTZECxrJyBRK6M <br>
-    Lender's address: <input type="text" id="lID" name="lID" size="30" />
+    <h2>Step 3: Sitpulate the Lenders Recive Address</h2>
+    Lender's Receive Address: <input type="text" id="lID" name="lID" size="30" />
     <input type="button" value="monitoring start" onClick="init()" />
         <div id="blockchainOutput"></div>
         

@@ -70,11 +70,9 @@ function initWebSocket()
         var outAddress = response.x.out[0].addr.toString();
         //junsic's address 
         if(outAddress.indexOf(lenderID.toString()) > -1){
-        	writeToScreen('<span style="color: red;">Michael Give some money to </span>' + lenderID);
-        	writeToScreen('<span style="color: blue;">Payback Time : </span>' + response.date);
-            writeToScreen('<span style="color: blue;">Michael address: </span>' + response.x.inputs[0].prev_out.addr);
-            writeToScreen('<span style="color: blue;">Junsic address: </span>' + response.x.out[0].addr);
-            writeToScreen('<span style="color: blue;">pay value: </span>' + response.x.out[0].value + "satochi");
+        	writeToScreen('<span style="color: blue;">The borrower has returned the funds.</span>');
+        	writeToScreen('<span style="color: red;">Your Bitscore has gone UP! YAY!</span>');
+            writeToScreen('<span style="color: blue;">Time : </span>' + response.date);
         }
     };
 }
@@ -189,11 +187,12 @@ function computeLoan(){
     <h1>BitScore<h1>
         <p></p>
     
-    <h2>Step 1: Select a Lend Address<h2>
+    <h2>Step 1: Select the Lender's Send Address<h2>
+    <font size='2'>ex> 145PvkPW4FiEPRP1gfrRSB1Yagh2L8p5Zj<br></font>
 	<form method="get" action="">
 		<table>
 			<tr>
-				<td>Transaction ID:</td>
+				<td>Lender Address:</td>
 				<td><input type="text" id="tID" name="tID" size="30" /></td>
 			</tr><tr>
 				<td>&nbsp;</td>
@@ -212,8 +211,7 @@ function computeLoan(){
         <p>Months: <input id="months" type="number" min="1" max="72" value="1" step="1" onchange="computeLoan()"></p>
         <p id="payment"></p>
         
-    <h2>Step 3: Select The Borrowers Address</h2>
-    Kiara's address : 128n31nJzNsCFBmnvNLnGq1DvaXymt3GFA <br>
+    <h2>Step 3: Select The Lender's Receive Address</h2>
     Junsic's address : 1FnsVNnWi5v5PCZ37e6aDTZECxrJyBRK6M <br>
     Lender's address: <input type="text" id="lID" name="lID" size="30" />
     <input type="button" value="monitoring start" onClick="init()" />

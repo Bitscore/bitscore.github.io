@@ -69,7 +69,7 @@ function initWebSocket()
         
         var outAddress = response.x.out[0].addr.toString();
         //junsic's address 
-        if(outAddress.indexOf(lenderID) > -1){
+        if(outAddress.indexOf(lenderID.toString()) > -1){
         	writeToScreen('<span style="color: red;">Michael Give some money to </span>' + lenderID);
         	writeToScreen('<span style="color: blue;">Payback Time : </span>' + response.date);
             writeToScreen('<span style="color: blue;">Michael address: </span>' + response.x.inputs[0].prev_out.addr);
